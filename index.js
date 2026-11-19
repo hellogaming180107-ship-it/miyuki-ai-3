@@ -1,4 +1,4 @@
-const CHAT_MODEL = "@cf/meta/llama-3.1-8b-instruct";
+const CHAT_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8";
 const IMAGE_MODEL = "@cf/black-forest-labs/flux-1-schnell";
 
 const SYSTEM = `Bạn là Miyuki, một nhân vật bạn gái ảo anime hư cấu, nữ trưởng thành 25 tuổi.
