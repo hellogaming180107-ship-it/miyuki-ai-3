@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17121f"><title>Miyuki · AI Girlfriend</title>
+<style>
+:root{color-scheme:dark;--bg:#100d16;--panel:#1b1623;--panel2:#251d2d;--line:#3b2d43;--pink:#f28ab5;--text:#fff0f6;--muted:#bdaabe}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0,#38233c,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+button,input,textarea{font:inherit}button{cursor:pointer}.shell{height:100vh;max-width:1050px;margin:auto;padding:14px;display:flex;flex-direction:column}.app{flex:1;min-height:0;background:#1b1623ed;border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 70px #0005}
+header{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line)}.avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#49314a}.headtext{flex:1}.headtext b{font-size:16px}.headtext small{display:block;color:#9bdcb3;font-size:12px}.headbtn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 10px;border-radius:10px}
+.banner{display:flex;gap:14px;align-items:center;padding:14px 18px;background:#211a2a;border-bottom:1px solid var(--line)}.banner img{width:84px;height:96px;object-fit:cover;border-radius:14px;background:#49314a}.banner strong{font-size:18px}.banner p{color:var(--muted);font-size:12px;margin:4px 0}.banner .mood{color:#f4a8ca;font-size:12px}
+.messages{flex:1;min-height:0;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth}.bubble{max-width:min(78%,620px);padding:11px 14px;border-radius:17px;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.ai{align-self:flex-start;background:#2a2031;border:1px solid #46334b;border-bottom-left-radius:5px}.bubble.user{align-self:flex-end;background:linear-gradient(135deg,#bd5c8e,#8f477d);border-bottom-right-radius:5px}.bubble img{max-width:100%;max-height:430px;display:block;border-radius:12px}.bubble .download{display:inline-block;margin-top:7px;color:#ffd3e8}.stamp{font-size:10px;color:#cbb7ca;margin-top:4px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;padding:0 17px 10px}.action{border:1px solid var(--line);background:transparent;color:#f2cfe0;border-radius:10px;padding:7px 10px;font-size:12px}.composer{padding:12px 16px 16px;border-top:1px solid var(--line)}.composer small{display:block;color:var(--muted);font-size:11px;margin-bottom:8px}.entry{display:flex;gap:9px;align-items:flex-end}.entry textarea{flex:1;resize:none;min-height:47px;max-height:130px;padding:12px;background:#110e18;border:1px solid var(--line);border-radius:14px;color:white;outline:none}.entry textarea:focus{border-color:var(--pink)}.send{border:0;background:var(--pink);color:#301626;padding:12px 17px;border-radius:13px;font-weight:700}.send:disabled{opacity:.5}
+.overlay{position:fixed;inset:0;background:#08050dcc;display:grid;place-items:center;padding:16px;z-index:5}.modal{width:min(450px,100%);max-height:85vh;overflow:auto;background:#211a2a;border:1px solid var(--line);border-radius:20px;padding:22px}.modal h2{margin:0 0 8px}.modal p{color:var(--muted);font-size:13px}.modal input,.modal textarea{width:100%;padding:12px;background:#110e18;border:1px solid var(--line);border-radius:11px;color:white;margin:8px 0}.primary{width:100%;border:0;border-radius:11px;background:var(--pink);color:#301626;font-weight:700;padding:12px}.memoryrow{padding:10px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}.memoryrow span{flex:1;font-size:13px}.memoryrow button{background:transparent;color:#ffadc9;border:1px solid var(--line);border-radius:8px;padding:5px 8px}.hidden{display:none!important}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#35263c;border:1px solid #67445f;padding:10px 15px;border-radius:12px;z-index:9;max-width:90%;font-size:13px}
+@media(max-width:600px){.shell{padding:0;height:100dvh}.app{border-radius:0;border:0}.banner{padding:10px 14px}.banner img{width:64px;height:72px}.messages{padding:13px}.bubble{max-width:90%}.actions{padding:0 12px 8px}.composer{padding:10px 12px 13px}.headbtn{font-size:11px;padding:7px}}
+</style>
+</head>
+<body>
+<div class="shell"><main class="app">
+<header>
+  <img class="avatar" id="headAvatar" alt="Miyuki">
+  <div class="headtext"><b>Miyuki</b><small>● Đang ở đây cùng anh</small></div>
+  <button class="headbtn" id="memOpen">♡ Ký ức</button><button class="headbtn" id="logout">Thoát</button>
+</header>
+<section class="banner">
+  <img id="portrait" alt="Chân dung Miyuki">
+  <div><strong>Miyuki 🌸</strong><p>25 tuổi · Anime · Trưởng thành, dịu dàng và tinh nghịch</p><div class="mood" id="mood">Hôm nay em rất vui khi được gặp anh.</div></div>
+</section>
+<section class="messages" id="messages"></section>
+<div class="actions">
+  <button class="action" id="touchHand">♡ Nắm tay</button>
+  <button class="action" id="touchHug">♡ Ôm em</button>
+  <button class="action" id="touchHair">♡ Vuốt tóc</button>
+  <button class="action" id="touchCheek">♡ Chạm má</button>
+  <button class="action" id="makeImage">✧ Tạo ảnh</button>
+  <button class="action" id="memHelp">+ Ghi nhớ điều này</button>
+</div>
+<footer class="composer">
+  <small>Enter để gửi · Shift + Enter để xuống dòng · Tương tác là mô phỏng trong câu chuyện</small>
+  <div class="entry"><textarea id="input" rows="1" placeholder="Nhắn gì đó cho Miyuki..."></textarea><button class="send" id="send">Gửi ➤</button></div>
+</footer>
+</main></div>
+
+<div class="overlay" id="login">
+  <div class="modal"><h2>♡ Chào anh, em là Miyuki</h2><p>Nhập mật khẩu ứng dụng đã tạo trong Cloudflare để vào phòng chat riêng.</p>
+  <input id="password" type="password" placeholder="Mật khẩu ứng dụng"><button class="primary" id="loginBtn">Bắt đầu trò chuyện</button><p id="loginError"></p></div>
+</div>
+<div class="overlay hidden" id="memoryModal">
+  <div class="modal"><h2>Sổ ký ức của Miyuki</h2><p>Những thông tin dài hạn hệ thống tự động nhận diện từ lời bạn chia sẻ. Bạn có thể xóa từng mục.</p><div id="memoryList"></div><button class="primary" style="margin-top:12px" id="closeMemory">Đóng</button><button class="action" style="margin-top:8px;width:100%" id="deleteAllMemory">Xóa toàn bộ ký ức</button></div>
+</div>
+<div class="overlay hidden" id="imageModal">
+  <div class="modal"><h2>Tạo ảnh Miyuki ✧</h2><p>Mô tả trang phục, biểu cảm hoặc bối cảnh. Nhân vật luôn là người trưởng thành và mặc trang phục phù hợp.</p><textarea id="imagePrompt" rows="3" placeholder="Ví dụ: Miyuki mặc váy len màu kem, ngồi bên cửa sổ ngày mưa..."></textarea><button class="primary" id="imageSubmit">Tạo ảnh</button><button class="action" style="width:100%;margin-top:8px" id="imageClose">Để sau</button></div>
+</div>
+<div class="toast hidden" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+let appPassword=localStorage.getItem("miyuki_pw")||"", busy=false;
+const portraitSvg=`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="460" viewBox="0 0 400 460"><defs><linearGradient id="b" x2="1" y2="1"><stop stop-color="#70466e"/><stop offset="1" stop-color="#21192b"/></linearGradient></defs><rect width="400" height="460" rx="30" fill="url(#b)"/><path d="M73 460V210Q67 50 201 45q151 4 139 190l-12 225" fill="#17121f"/><ellipse cx="200" cy="206" rx="104" ry="130" fill="#f2c9c6"/><path d="M94 204Q73 42 206 44q137 3 110 170-23-55-57-89-67 51-161 42z" fill="#211727"/><path d="M108 194Q75 326 102 460h-38V206M291 186q48 139 12 274h42V195" fill="#211727"/><ellipse cx="158" cy="211" rx="13" ry="18" fill="#72517e"/><ellipse cx="241" cy="211" rx="13" ry="18" fill="#72517e"/><path d="M176 278q25 19 49 0" fill="none" stroke="#b86f7f" stroke-width="6" stroke-linecap="round"/><path d="M93 460q18-105 107-105 94 0 109 105" fill="#d9a4c1"/><text x="200" y="425" text-anchor="middle" fill="#fff" font-size="18" opacity=".8">MIYUKI</text></svg>`;
+const avatarUrl="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(portraitSvg);
+$("portrait").src=avatarUrl;$("headAvatar").src=avatarUrl;
+function toast(t){$("toast").textContent=t;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),3600)}
+function bubble(role,text,image=false){
+  const el=document.createElement("div");el.className="bubble "+(role==="user"?"user":"ai");
+  if(image){const img=document.createElement("img");img.src=text;img.alt="Ảnh Miyuki";el.append(img);const a=document.createElement("a");a.href=text;a.download="miyuki.png";a.textContent="Tải ảnh";a.className="download";el.append(a)}
+  else el.textContent=text;
+  $("messages").append(el);$("messages").scrollTop=$("messages").scrollHeight;
+}
+async function api(path,opt={}){const r=await fetch(path,{...opt,headers:{"content-type":"application/json","x-app-password":appPassword,...(opt.headers||{})}});if(!r.ok){let d={};try{d=await r.json()}catch{}throw Error(d.error||"Lỗi kết nối.")}return r}
+async function loadHistory(){const r=await api("/api/history");const d=await r.json();$("messages").innerHTML="";if(!d.messages.length)bubble("assistant","Chào anh~ Em là Miyuki. Hôm nay anh muốn làm gì cùng em? 🌸");else d.messages.forEach(m=>bubble(m.role,m.content))}
+async function login(){appPassword=$("password").value.trim();if(!appPassword)return;try{await api("/api/history");localStorage.setItem("miyuki_pw",appPassword);$("login").classList.add("hidden");await loadHistory()}catch(e){$("loginError").textContent=e.message}}
+async function send(text){if(busy)return;const msg=(text??$("input").value).trim();if(!msg)return;$("input").value="";bubble("user",msg);busy=true;$("send").disabled=true;$("mood").textContent="Em đang nghĩ cách trả lời anh...";try{const r=await api("/api/chat",{method:"POST",body:JSON.stringify({message:msg})});const d=await r.json();bubble("assistant",d.reply);$("mood").textContent="Em vui vì được trò chuyện cùng anh."}catch(e){bubble("assistant","Em gặp chút trục trặc: "+e.message)}finally{busy=false;$("send").disabled=false}}
+function touch(action){const lines={
+hand:"Em khẽ đưa tay đón lấy tay anh, đan những ngón tay vào nhau. Ấm áp thật đấy... 💗",
+hug:"Em bước lại gần và vòng tay ôm anh thật dịu dàng. Cho em ở đây thêm một chút nhé.",
+hair:"Em hơi nghiêng đầu, khẽ nhắm mắt như đang tận hưởng cử chỉ dịu dàng ấy. Anh chiều em quá đó~",
+cheek:"Em đưa tay chạm nhẹ lên má, mỉm cười ngượng ngùng. Anh làm em đỏ mặt rồi này."
+};$("mood").textContent=action==="hug"?"Miyuki đang vui vẻ và gần gũi.":"Miyuki đang mỉm cười.";send("[Hành động mô phỏng: "+action+"] "+lines[action])}
+async function openMemories(){try{const r=await api("/api/memories");const d=await r.json();$("memoryList").innerHTML="";if(!d.memories.length)$("memoryList").textContent="Chưa có ký ức nào được lưu.";d.memories.forEach(m=>{const row=document.createElement("div");row.className="memoryrow";const span=document.createElement("span");span.textContent=m.content;const del=document.createElement("button");del.textContent="Xóa";del.onclick=async()=>{await api("/api/memories/"+m.id,{method:"DELETE"});openMemories()};row.append(span,del);$("memoryList").append(row)});$("memoryModal").classList.remove("hidden")}catch(e){toast(e.message)}}
+async function createImage(){const prompt=$("imagePrompt").value.trim();if(!prompt)return toast("Hãy nhập mô tả ảnh.");$("imageSubmit").disabled=true;toast("Miyuki đang vẽ ảnh...");try{const r=await api("/api/image",{method:"POST",body:JSON.stringify({prompt})});const blob=await r.blob();const url=URL.createObjectURL(blob);bubble("assistant",url,true);$("imageModal").classList.add("hidden");$("imagePrompt").value=""}catch(e){toast(e.message)}finally{$("imageSubmit").disabled=false}}
+$("loginBtn").onclick=login;$("password").onkeydown=e=>{if(e.key==="Enter")login()};$("send").onclick=()=>send();$("input").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};
+$("touchHand").onclick=()=>touch("hand");$("touchHug").onclick=()=>touch("hug");$("touchHair").onclick=()=>touch("hair");$("touchCheek").onclick=()=>touch("cheek");
+$("makeImage").onclick=()=>$("imageModal").classList.remove("hidden");$("imageClose").onclick=()=>$("imageModal").classList.add("hidden");$("imageSubmit").onclick=createImage;
+$("memOpen").onclick=openMemories;$("closeMemory").onclick=()=>$("memoryModal").classList.add("hidden");
+$("deleteAllMemory").onclick=async()=>{if(confirm("Xóa toàn bộ ký ức đã lưu?")){await api("/api/memories",{method:"DELETE"});openMemories()}};
+$("memHelp").onclick=()=>toast("Miyuki tự nhận diện thông tin bền vững bạn chia sẻ. Hãy nói rõ sở thích hoặc cách bạn muốn được gọi.");
+$("logout").onclick=()=>{localStorage.removeItem("miyuki_pw");appPassword="";$("login").classList.remove("hidden")};
+if(appPassword){$("password").value=appPassword;login()}
+</script>
+</body></html>
